@@ -1,0 +1,51 @@
+import sqlite3
+
+# Function to create a connection to the SQLite database
+def create_connection():
+    try:
+        conn = sqlite3.connect('social_network.db')
+        return conn
+    except sqlite3.Error as e:
+        print(e)
+    return None
+
+# Function to create user table
+def create_user_table(conn):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                gender TEXT
+            )
+        ''')
+        conn.commit()
+    except sqlite3.Error as e:
+        print(e)
+
+# Function to insert a new user into the database
+def insert_user(conn, name, email, password, gender):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO users (name, email, password, gender)
+            VALUES (?, ?, ?, ?)
+        ''', (name, email, password, gender))
+        conn.commit()
+        return cursor.lastrowid
+    except sqlite3.Error as e:
+        print(e)
+        return None
+
+# Function to check if email already exists in the database
+def email_exists(conn, email):
+    try:
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
+        return cursor.fetchone() is not None
+    except sqlite3.Error as e:
+        print(e)
+        return False
