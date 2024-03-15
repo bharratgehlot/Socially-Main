@@ -1,0 +1,4 @@
+Flask=3.0.2
+pythondotenv=1.0.1
+SQLAlchemy=2.0.28
+Flask-WTF=1.2.1
